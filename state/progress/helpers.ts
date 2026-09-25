@@ -38,6 +38,24 @@ export function getAllChapterLessons(chapter: ChapterInState): LessonInState[] {
   return chapter.lessons || []
 }
 
+/** Returns whether every screen in the Chapters 4–7 story interlude is done. */
+export function isStoryInterludeCompleted(chapters: ChapterInState[]): boolean {
+  const chapterEight = chapters.find((chapter) => chapter.id === 8)
+
+  if (!chapterEight) {
+    return false
+  }
+
+  const interludeLessons = getChapterLessons(chapterEight).filter((lesson) =>
+    lesson.id.startsWith('CH8STI')
+  )
+
+  return (
+    interludeLessons.length > 0 &&
+    interludeLessons.every((lesson) => lesson.completed)
+  )
+}
+
 /**
  * Returns a new chapter array with the given lesson marked as complete.
  *

@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { createProgressFixture } from './fixtures/progressFixtures'
-import { DifficultyLevel } from 'state/progress/defaultProgress'
+import {
+  defaultProgressState,
+  DifficultyLevel,
+} from 'state/progress/defaultProgress'
 import {
   findNextIncompleteLesson,
+  isStoryInterludeCompleted,
   markLessonCompleteInChapters,
 } from 'state/progress/helpers'
 
@@ -110,5 +114,51 @@ describe('findNextIncompleteLesson', () => {
     expect(result).not.toBeNull()
     expect(result!.lesson.id).toBe('CH1INT2')
     expect(result!.chapterId).toBe(1)
+  })
+})
+
+describe('isStoryInterludeCompleted', () => {
+  it('returns false before the interlude has been read', () => {
+    expect(isStoryInterludeCompleted(defaultProgressState.chapters)).toBe(false)
+  })
+
+  it('returns true after all interlude screens have been read', () => {
+    const completedInterlude = defaultProgressState.chapters.map((chapter) => {
+      if (chapter.id !== 8 || chapter.hasDifficulty) {
+        return chapter
+      }
+
+      return {
+        ...chapter,
+        lessons: chapter.lessons.map((lesson) =>
+          lesson.id.startsWith('CH8STI')
+            ? { ...lesson, completed: true }
+            : lesson
+        ),
+      }
+    })
+
+    expect(isStoryInterludeCompleted(completedInterlude)).toBe(true)
+  })
+
+  it('returns false while an interlude screen remains unread', () => {
+    const partlyCompletedInterlude = defaultProgressState.chapters.map(
+      (chapter) => {
+        if (chapter.id !== 8 || chapter.hasDifficulty) {
+          return chapter
+        }
+
+        return {
+          ...chapter,
+          lessons: chapter.lessons.map((lesson) =>
+            lesson.id.startsWith('CH8STI') && lesson.id !== 'CH8STI8'
+              ? { ...lesson, completed: true }
+              : lesson
+          ),
+        }
+      }
+    )
+
+    expect(isStoryInterludeCompleted(partlyCompletedInterlude)).toBe(false)
   })
 })

@@ -1828,6 +1828,9 @@ const translations = {
 
   story_interlude: {
     title: `Story Interlude — Summary of Chapters 4–7`,
+    start: `Start interlude`,
+    complete_chapter_three_to_unlock: `Complete Chapter 3 to unlock.`,
+    complete_to_unlock: `Complete the Chapters 4–7 story interlude to unlock.`,
     opening_nav_title: `Workshop summary`,
     workshop_notice: `Chapters 4–7 normally cover wallets and keys, signatures, transactions, and block construction. In this workshop, those chapters are summarized as a story-only interlude with no challenges or completion exercises.`,
     vanderpoole_nav_title: `Vanderpoole's claim`,

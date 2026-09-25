@@ -25,6 +25,7 @@ import {
 import { isChapterInProgress } from 'state/progress/utils'
 import DifficultySelection from './DifficultySelection'
 import { getChapterOverviewLayoutPosition } from 'config/chapters'
+import { isStoryInterludeCompleted } from 'state/progress/helpers'
 
 export default function Chapter({ children, metadata, lang }) {
   const { isDevelopment } = useEnvironment()
@@ -83,13 +84,23 @@ export default function Chapter({ children, metadata, lang }) {
   const position = metadata.position + 1
   const isChapterCompleted =
     courseProgress?.chapters[position - 1]?.completed ?? false
+  const hasCompletedPrerequisite =
+    position !== 8 || isStoryInterludeCompleted(courseProgress.chapters)
   const display = useMemo(
     () =>
       metadata.slug === 'chapter-1' ||
       isDevelopment ||
-      (isEnabled && isUnlocked && !isLoading) ||
-      courseProgress?.chapters[position - 1]?.completed,
-    [metadata.slug, isDevelopment, isEnabled, isUnlocked, isLoading]
+      (isEnabled && isUnlocked && hasCompletedPrerequisite && !isLoading) ||
+      isChapterCompleted,
+    [
+      metadata.slug,
+      isDevelopment,
+      isEnabled,
+      isUnlocked,
+      hasCompletedPrerequisite,
+      isLoading,
+      isChapterCompleted,
+    ]
   )
   const canAccessChapterContent =
     display &&
@@ -99,6 +110,12 @@ export default function Chapter({ children, metadata, lang }) {
 
   const routes = useLocalizedRoutes()
   const t = useTranslations(lang)
+  const unlockRequirement =
+    position === 8
+      ? t('story_interlude.complete_to_unlock')
+      : `${t('chapter.chapter_locked_one')} ${position - 1} ${t(
+          'chapter.chapter_locked_two'
+        )}`
   const chapter = chapters[metadata.slug]
   const isEven = useMemo(
     () => getChapterOverviewLayoutPosition(position) % 2 === 0,
@@ -206,8 +223,7 @@ export default function Chapter({ children, metadata, lang }) {
                             icon="lock"
                             className="my-auto mr-2 h-3 w-3 justify-center"
                           />
-                          {t('chapter.chapter_locked_one')} {position - 1}{' '}
-                          {t('chapter.chapter_locked_two')}&nbsp;
+                          {unlockRequirement}
                           {/*!account && (
                           <button
                             onClick={() => handleClick(Modal.SignIn)}
@@ -224,11 +240,10 @@ export default function Chapter({ children, metadata, lang }) {
                           icon="lock"
                           className="my-auto mr-2 h-3 w-3 justify-center"
                         />
-                        {t('chapter.chapter_locked_one')} {position - 1}{' '}
-                        {t('chapter.chapter_locked_two')}&nbsp;
+                        {unlockRequirement}
                         <button
                           onClick={() => handleClick(Modal.SignIn)}
-                          className="underline"
+                          className="ml-1 underline"
                         >
                           {t('modal_signin.login')}
                         </button>
@@ -271,9 +286,7 @@ export default function Chapter({ children, metadata, lang }) {
                           !account &&
                           !isAccountLoading &&
                           position !== 1 &&
-                          `${t('chapter.chapter_locked_one')} ${
-                            position - 1
-                          } ${t('chapter.chapter_locked_two')}`) ||
+                          unlockRequirement) ||
                         (chapter.metadata.lessons.length > 0 &&
                           display &&
                           isChapterInProgressValue &&
@@ -283,9 +296,7 @@ export default function Chapter({ children, metadata, lang }) {
                         (!display &&
                           !isEnabled &&
                           `${t('shared.coming_soon')}`) ||
-                        `${t('chapter.chapter_locked_one')} ${position - 1} ${t(
-                          'chapter.chapter_locked_two'
-                        )}`}
+                        unlockRequirement}
                     </Button>
                   </div>
                 </div>
