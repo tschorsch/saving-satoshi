@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useTranslations } from 'hooks'
+import useEnvironment from 'hooks/useEnvironment'
 import { Button } from 'shared'
 
 const images = [
@@ -13,6 +14,7 @@ const images = [
 
 export default function StoryInterludeOverview({ lang }: { lang: string }) {
   const t = useTranslations(lang)
+  const { isDevelopment } = useEnvironment()
 
   return (
     <div
@@ -28,7 +30,9 @@ export default function StoryInterludeOverview({ lang }: { lang: string }) {
             {t('story_interlude.workshop_notice')}
           </p>
           <Button
-            href={`/${lang}/chapters/chapter-8/story-interlude-1`}
+            href={`/${lang}/chapters/chapter-8/story-interlude-1${
+              isDevelopment ? '?dev=true' : ''
+            }`}
             classes="mt-8 w-full"
           >
             {t('shared.start')}
