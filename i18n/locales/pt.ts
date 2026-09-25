@@ -2290,7 +2290,7 @@ const translations = {
       nav_title: `Obtenha a taxa de transação`,
       heading: `Dados de transação`,
       paragraph_one: `Os objetos de transação confirmados em um bloco são objetos JSON que incluem arrays de "entradas" e "saídas". Ambos arrays são listas de UTXOs, também conhecidas como "moedas". Os objetos de moeda têm uma propriedade "value" representada em satoshis.`,
-      paragraph_two: `O array "inputs" são as moedas gastas (destruídas) pela transação e o array "outputs" são as moedas criadas pela transação. Você deve se lembrar do Capítulo 6 que as transações sempre pagam uma taxa para incentivar os mineradores a incluí-las em um bloco. Essa taxa é exatamente a diferença de valor entre os valores totais de entrada e saída de uma transação.`,
+      paragraph_two: `O array "inputs" contém as moedas gastas (destruídas) pela transação e o array "outputs" contém as moedas criadas pela transação. Uma taxa de transação incentiva os mineradores a incluir a transação em um bloco. Ela é calculada como o valor total das entradas menos o valor total das saídas.`,
       paragraph_three: `Em outras palavras, o minerador fica com qualquer bitcoin que tenha sido enviado para a transação, mas não enviado de volta para os destinatários da transação.`,
       paragraph_four: `Há uma transação com o txid:`,
       paragraph_five: `em um bloco com o hash:`,

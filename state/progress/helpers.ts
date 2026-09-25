@@ -1,4 +1,5 @@
 import { ChapterInState, LessonInState } from 'types'
+import { isChapterVisible } from 'config/chapters'
 
 /**
  * Returns the lesson list progression should use for this chapter.
@@ -94,6 +95,11 @@ export function findNextIncompleteLesson(
 ): { lesson: LessonInState; chapterId: number } | null {
   for (let i = startIndex; i < chapters.length; i++) {
     const chapter = chapters[i]
+
+    if (!isChapterVisible(chapter.id)) {
+      continue
+    }
+
     const lessons = getChapterLessons(chapter)
     const incomplete = lessons.find((lesson) => !lesson.completed)
 

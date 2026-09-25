@@ -1,6 +1,7 @@
 'use client'
 
 import { useSaveAndReturn, useProceed, usePathData } from 'hooks'
+import useEnvironment from 'hooks/useEnvironment'
 import { lessons } from 'content'
 import { useEffect, useState } from 'react'
 import DesktopEnd from './DesktopEnd'
@@ -44,6 +45,7 @@ export default function End({
   const [account] = useAtom(accountAtom)
   const saveAndReturn = useSaveAndReturn()
   const proceed = useProceed()
+  const { isDevelopment } = useEnvironment()
   const { chapterId, lessonId } = usePathData()
   const markLessonAsComplete = useSetAtom(markLessonAsCompleteAtom)
 
@@ -54,6 +56,8 @@ export default function End({
   const chapterLessons = lessons?.[chapterId]
   const lesson = chapterLessons?.[lessonId]?.metadata ?? null
   const currentLessonKey = lesson?.key ?? 'CH1INT1'
+  const shouldProceed =
+    saveAndProceed || isDevelopment || chapterId === 'chapter-3'
 
   const updateMedia = () => {
     setDesktop(window.innerWidth > 768)
@@ -82,11 +86,11 @@ export default function End({
           direction={direction}
           theme={theme}
           account={account}
-          onClick={saveAndProceed ? proceed : handleClick}
+          onClick={shouldProceed ? proceed : handleClick}
           currentLessonKey={currentLessonKey}
           className={className}
           sharing={sharing}
-          saveAndProceed={saveAndProceed}
+          saveAndProceed={shouldProceed}
         >
           {children}
         </DesktopEnd>
@@ -97,11 +101,11 @@ export default function End({
           lang={lang}
           theme={theme}
           account={account}
-          onClick={saveAndProceed ? proceed : handleClick}
+          onClick={shouldProceed ? proceed : handleClick}
           currentLessonKey={currentLessonKey}
           gradientTheme={gradientTheme}
           sharing={sharing}
-          saveAndProceed={saveAndProceed}
+          saveAndProceed={shouldProceed}
         >
           {children}
         </MobileEnd>

@@ -1,4 +1,29 @@
-# Saving Satoshi
+# Saving Satoshi — Blockchain Course Edition
+
+> This repository is a course-specific adaptation of
+> [Saving Satoshi](https://github.com/saving-satoshi/saving-satoshi) for use in
+> a university blockchain course.
+>
+> It modifies the original chapter selection, progression, and selected content
+> to support the course format.
+>
+> For the original project, documentation, and full learning experience, please
+> refer to the upstream
+> [Saving Satoshi repository](https://github.com/saving-satoshi/saving-satoshi).
+
+## Course-specific changes
+
+This version:
+
+- uses a reduced selection of Saving Satoshi chapters;
+- adapts the progression between the selected chapters;
+- summarizes the omitted Chapters 4–7 in a story-only interlude;
+- adds course-specific transition and recap content;
+- may contain additional modifications for classroom use.
+
+---
+
+## About Saving Satoshi
 
 Saving Satoshi is a light-hearted, first point of contact for developers of all ages that want to learn how bitcoin works.
 
@@ -39,7 +64,7 @@ To help with translations and review head over to our translation [README.md](ht
 To run this project locally:
 
 1. First, make sure you have NodeJS version 16.13.0 or higher installed. Check `node -v`. Node [installation instructions](https://nodejs.org/en/download/package-manager/)
-2. Install this repository `git clone https://github.com/saving-satoshi/saving-satoshi.git`
+2. Clone this repository.
 3. Change into the directory `cd saving-satoshi`
 4. Run `yarn install` to download the required code libraries
 5. Run `yarn build` to build

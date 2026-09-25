@@ -40,9 +40,5 @@ export const metadata = {
     'validate-signature-4',
   ],
   outros: ['outro-1'],
-  challenges: [
-    'derive-message-1',
-    'verify-signature-1',
-    'validate-signature-1',
-  ],
+  challenges: [],
 }

@@ -291,6 +291,46 @@ export const defaultProgressState: CourseProgress = {
     {
       id: 8,
       lessons: [
+        {
+          id: 'CH8STI1',
+          path: '/chapter-8/story-interlude-1',
+          completed: false,
+        },
+        {
+          id: 'CH8STI2',
+          path: '/chapter-8/story-interlude-2',
+          completed: false,
+        },
+        {
+          id: 'CH8STI3',
+          path: '/chapter-8/story-interlude-3',
+          completed: false,
+        },
+        {
+          id: 'CH8STI4',
+          path: '/chapter-8/story-interlude-4',
+          completed: false,
+        },
+        {
+          id: 'CH8STI5',
+          path: '/chapter-8/story-interlude-5',
+          completed: false,
+        },
+        {
+          id: 'CH8STI6',
+          path: '/chapter-8/story-interlude-6',
+          completed: false,
+        },
+        {
+          id: 'CH8STI7',
+          path: '/chapter-8/story-interlude-7',
+          completed: false,
+        },
+        {
+          id: 'CH8STI8',
+          path: '/chapter-8/story-interlude-8',
+          completed: false,
+        },
         { id: 'CH8INT1', path: '/chapter-8/intro-1', completed: false },
         { id: 'CH8INT2', path: '/chapter-8/intro-2', completed: false },
         { id: 'CH8INT3', path: '/chapter-8/intro-3', completed: false },

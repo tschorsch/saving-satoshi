@@ -87,7 +87,7 @@ describe('progressState atoms', () => {
     expect(store.get(nextLessonAtom)?.id).toBe('CH1INT2')
 
     store.set(currentLessonAtom, 'CH1OUT1')
-    expect(store.get(nextLessonAtom)?.id).toBe('CH6INT1')
+    expect(store.get(nextLessonAtom)?.id).toBe('CH10INT1')
 
     store.set(currentLessonAtom, 'CH10OUT1')
     expect(store.get(nextLessonAtom)).toBeNull()
@@ -112,7 +112,9 @@ describe('progressState atoms', () => {
       true
     )
     const crossChapterStore = createSeededStore(crossChapter)
-    expect(crossChapterStore.get(nextLessonPathAtom)).toBe('/chapter-6/intro-1')
+    expect(crossChapterStore.get(nextLessonPathAtom)).toBe(
+      '/chapter-10/intro-1'
+    )
 
     let allComplete = createProgressFixture()
     const lessons = [

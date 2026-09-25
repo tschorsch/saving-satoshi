@@ -11,7 +11,6 @@ import * as navigation from 'next/navigation'
 // @ts-ignore
 import { relayInit } from 'nostr-tools' // eslint-disable-line
 import NostrIcon from 'shared/icons/Nostr'
-import TwitterIcon from 'shared/icons/Twitter'
 import { usePublish } from 'nostr-hooks'
 import { useAtomValue } from 'jotai'
 import { syncedCourseProgressAtom } from 'state/progress/atoms'
@@ -49,9 +48,6 @@ export default function MobileEnd({
   const isThisLastLesson = isLastLesson(currentLessonKey, courseProgress)
 
   const nostrContent = `https://savingsatoshi.com/_next/image?url=%2Fassets%2Fimages%2Fnostr%2Fnostr-share-${chapterId}.jpg&w=1200&q=75 Code your way through the mysteries of bitcoin with nostr:npub1vy6wcgw6jhhtcmpawvlnsfx7g8qt8r40z7qlks9zwa4ed57vm5eqx527hr`
-  const twitterContent = `I%20just%20finished%20chapter%20${
-    chapterId.split('-')[1]
-  }%20in%20%40savingsatoshi!%20Code%20your%20way%20through%20the%20mysteries%20of%20bitcoin%20at%20&url=https://savingsatoshi.com`
 
   const currentTime = new Date()
 
@@ -188,17 +184,6 @@ export default function MobileEnd({
                 <div className="flex flex-row justify-center gap-4">
                   <NostrIcon className="h-7 w-7" fill="white" />
                   {shareText}
-                </div>
-              </Button>
-              <Button
-                style="outline"
-                size="small"
-                external
-                href={`https://twitter.com/intent/post?original_referer=https%3A%2F%2Fsavingsatoshi.com%2F&text=${twitterContent}`}
-              >
-                <div className="flex flex-row justify-center gap-4">
-                  <TwitterIcon className="h-6 w-6" />
-                  {t('social.twitter_share')}
                 </div>
               </Button>
             </>

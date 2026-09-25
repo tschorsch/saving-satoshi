@@ -1,4 +1,5 @@
 import { lessons } from 'content'
+import { isChapterVisible } from 'config/chapters'
 import {
   ChapterWithDifficulties,
   ChapterWithoutDifficulties,
@@ -251,6 +252,10 @@ export const isLessonUnlockedUsingId = (
       const previousLesson = chapterLessons[lessonIndex - 1]
 
       if (lesson.id === lessonId) {
+        if (!isChapterVisible(chapter.id)) {
+          return false
+        }
+
         if (previousLesson?.completed) {
           // Normal case: previous lesson in this chapter is complete.
           return true
@@ -262,9 +267,13 @@ export const isLessonUnlockedUsingId = (
             return true
           }
 
-          // First lesson in later chapters unlocks after previous chapter is done.
-          const previousChapter = courseProgress.chapters[chapterIndex - 1]
-          return previousChapter.completed
+          // First lesson in later chapters unlocks after the previous workshop
+          // chapter is done. Chapters omitted from the workshop do not block it.
+          const previousChapter = courseProgress.chapters
+            .slice(0, chapterIndex)
+            .reverse()
+            .find((candidate) => isChapterVisible(candidate.id))
+          return previousChapter?.completed ?? true
         }
 
         return false
@@ -337,6 +346,11 @@ export const getNextLessonUsingChapterIdAndLessonName = (
     chapterIndex++
   ) {
     const nextChapter = courseProgress.chapters[chapterIndex]
+
+    if (!isChapterVisible(nextChapter.id)) {
+      continue
+    }
+
     const nextChapterLessons = getChapterLessons(nextChapter)
 
     if (nextChapterLessons.length > 0) {

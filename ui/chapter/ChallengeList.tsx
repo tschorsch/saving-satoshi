@@ -123,30 +123,39 @@ export default function ChallengeList({
               lessonPage={lessonPage}
             />
           ))}
-          {Object.keys(groupedLessonData).map((title, index) => (
-            <div key={title}>
-              <h2
-                className={clsx('text-white', {
-                  'text-lg font-bold': !lessonPage,
-                  'flex px-[10px] pt-2 text-[15px] font-semibold': lessonPage,
-                })}
-              >
-                <span className="pr-1 text-white/50">{index + 2}.</span>
-                {t(groupedLessonData[title][0].title)}
-              </h2>
-              <ul>
-                {groupedLessonData[title].map((lesson, index) => (
-                  <ChallengeListItem
-                    key={index + 1}
-                    title={lesson.navigation_title}
-                    chapterId={chapterId}
-                    lessonId={lesson.lessonId}
-                    lessonPage={lessonPage}
-                  />
-                ))}
-              </ul>
-            </div>
-          ))}{' '}
+          {challengesData.map((challenge, index) => {
+            const groupId = challenge.lessonId.split('-')[0]
+            const groupedLessons = groupedLessonData[groupId] || []
+
+            if (groupedLessons.length === 0) {
+              return null
+            }
+
+            return (
+              <div key={groupId}>
+                <h2
+                  className={clsx('text-white', {
+                    'text-lg font-bold': !lessonPage,
+                    'flex px-[10px] pt-2 text-[15px] font-semibold': lessonPage,
+                  })}
+                >
+                  <span className="pr-1 text-white/50">{index + 2}.</span>
+                  {t(groupedLessons[0].title)}
+                </h2>
+                <ul>
+                  {groupedLessons.map((lesson, index) => (
+                    <ChallengeListItem
+                      key={index + 1}
+                      title={lesson.navigation_title}
+                      chapterId={chapterId}
+                      lessonId={lesson.lessonId}
+                      lessonPage={lessonPage}
+                    />
+                  ))}
+                </ul>
+              </div>
+            )
+          })}{' '}
           <h2
             className={clsx('text-white', {
               'text-lg font-bold': !lessonPage,
@@ -154,7 +163,7 @@ export default function ChallengeList({
             })}
           >
             <span className="pr-1 text-white/50">
-              {Object.keys(groupedLessonData).length + 2}.
+              {challengesData.length + 2}.
             </span>
             {t('navbar.outro')}
           </h2>

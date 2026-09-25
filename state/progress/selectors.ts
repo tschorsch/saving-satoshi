@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { isChapterVisible } from 'config/chapters'
 import { LessonInState } from 'types'
 import { getChapterLessons } from './helpers'
 import { syncedCourseProgressAtom } from './atoms'
@@ -42,6 +43,10 @@ export const currentLessonComputedAtom = atom((get) => {
 
   // Walk chapters in order because progression order matters.
   for (const chapter of courseProgress.chapters) {
+    if (!isChapterVisible(chapter.id)) {
+      continue
+    }
+
     if (!chapter.completed) {
       // For difficulty chapters, this uses whichever track is selected.
       const lessons = getChapterLessons(chapter)
@@ -72,6 +77,10 @@ export const nextLessonAtom = atom((get) => {
 
   // Iterate in chapter order to match user-visible progression.
   for (const chapter of courseProgress.chapters) {
+    if (!isChapterVisible(chapter.id)) {
+      continue
+    }
+
     if (!chapter.completed) {
       const lessons = getChapterLessons(chapter)
 
@@ -136,33 +145,13 @@ export const nextLessonPathAtom = atom((get) => {
     return null
   }
 
-  let nextLesson: LessonInState | null = null
-
-  // Start at the current chapter pointer and scan forward.
-  for (
-    let i = courseProgress.currentChapter - 1;
-    i < courseProgress.chapters.length;
-    i++
-  ) {
-    const chapter = courseProgress.chapters[i]
-    const lessons = getChapterLessons(chapter)
-
-    const currentLessonIndex = lessons.findIndex(
-      (lesson) => lesson.id === currentLesson.id
-    )
-
-    if (currentLessonIndex !== -1 && currentLessonIndex < lessons.length - 1) {
-      // Next lesson is right here in the same chapter.
-      nextLesson = lessons[currentLessonIndex + 1]
-      break
-    } else if (i < courseProgress.chapters.length - 1) {
-      // Otherwise jump to the first lesson of the next chapter.
-      const nextChapter = courseProgress.chapters[i + 1]
-      const nextLessons = getChapterLessons(nextChapter)
-      nextLesson = nextLessons[0] || null
-      break
-    }
-  }
+  const progressionLessons: LessonInState[] = courseProgress.chapters
+    .filter((chapter) => isChapterVisible(chapter.id))
+    .flatMap(getChapterLessons)
+  const currentLessonIndex = progressionLessons.findIndex(
+    (lesson) => lesson.id === currentLesson.id
+  )
+  const nextLesson = progressionLessons[currentLessonIndex + 1] || null
 
   return nextLesson ? nextLesson.path : null
 })

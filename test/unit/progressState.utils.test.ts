@@ -1,4 +1,5 @@
 import { DifficultyLevel } from 'state/progress/defaultProgress'
+import { defaultProgressState } from 'state/progress/defaultProgress'
 import {
   getLessonById,
   getLessonKey,
@@ -180,15 +181,15 @@ describe('progressState utility functions', () => {
     expect(isLessonUnlockedUsingId('CH1INT2', progress)).toBe(true)
 
     expect(isLessonUnlockedUsingId('CH6INT1', progress)).toBe(false)
-    // First lesson in non-first chapters unlocks only when previous chapter is complete.
-    // Complete all chapter 1 lessons, then recompute `chapter.completed`.
+    // Complete the previous visible workshop chapter and recompute its flag.
     progress = setLessonsCompleted(
       progress,
       ['CH1INT1', 'CH1INT2', 'CH1OUT1'],
       true
     )
     progress = syncChapterCompletion(progress)
-    expect(isLessonUnlockedUsingId('CH6INT1', progress)).toBe(true)
+    expect(isLessonUnlockedUsingId('CH6INT1', progress)).toBe(false)
+    expect(isLessonUnlockedUsingId('CH10INT1', progress)).toBe(true)
   })
 
   it('isLessonUnlockedUsingLessonName wraps getLessonKey and isLessonUnlockedUsingId', () => {
@@ -222,7 +223,23 @@ describe('progressState utility functions', () => {
     )
 
     expect((nextInChapter as LessonInState).id).toBe('CH1INT2')
-    expect((nextChapterFirst as LessonInState).id).toBe('CH6INT1')
+    expect((nextChapterFirst as LessonInState).id).toBe('CH10INT1')
     expect(endOfCourse).toBeNull()
+  })
+
+  it('routes chapter 3 through the story interlude and then into chapter 8', () => {
+    const firstInterludeScreen = getNextLessonUsingChapterIdAndLessonName(
+      'chapter-3',
+      'outro-1',
+      defaultProgressState
+    )
+    const chapterEightIntro = getNextLessonUsingChapterIdAndLessonName(
+      'chapter-8',
+      'story-interlude-8',
+      defaultProgressState
+    )
+
+    expect(firstInterludeScreen?.id).toBe('CH8STI1')
+    expect(chapterEightIntro?.id).toBe('CH8INT1')
   })
 })

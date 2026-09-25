@@ -26,20 +26,24 @@ export default function Address() {
   const chapterLessons = lessons[chapterId]
   const lesson = chapterLessons[lessonId]?.metadata
 
-  const challenges = chapter.lessons
-    .map((l) => l.split('-')[0])
-    .filter((value, index, arr) => arr.indexOf(value) === index)
+  const challengeTitles = chapter.challenges.map((lessonId: string) => {
+    const { title } = lessons[chapterId][lessonId].metadata
 
-  const challengeTitles = chapters[chapterId].metadata.challenges.map(
-    (lessonId: string) => {
-      const { title } = lessons[chapterId][lessonId].metadata
-
-      return { lessonId, title }
-    }
-  )
+    return { groupId: lessonId.split('-')[0], title }
+  })
 
   const challengeName = lessonId?.split('-')[0]
-  const challengeIndex = challenges.indexOf(challengeName)
+  const challengeTitle = challengeTitles.find(
+    ({ groupId }) => groupId === challengeName
+  )?.title
+  const isStoryInterlude = lessonId.startsWith('story-interlude')
+  const sectionTitle = challengeTitle
+    ? t(challengeTitle)
+    : lessonId.startsWith('outro')
+    ? t('navbar.outro')
+    : lessonId.startsWith('intro')
+    ? t('navbar.intro')
+    : t(lesson?.title)
 
   // One time code, to be removed after Tabconf
   const isTabconf = lessonId === 'tabconf-clue-1'
@@ -50,19 +54,17 @@ export default function Address() {
         <>
           {chapter && !isTabconf && (
             <span className="truncate px-0.5 align-sub text-lg leading-tight text-white/50">
-              <span>
-                {t('navbar.chapter')} {chapter.position + 1}
-              </span>
-              <>
-                <span>, </span>
-                <span>
-                  {challengeIndex >= 0
-                    ? t(challengeTitles[challengeIndex].title)
-                    : lessonId.startsWith('outro')
-                    ? 'Outro'
-                    : 'Intro'}
-                </span>
-              </>
+              {isStoryInterlude ? (
+                <span>{sectionTitle}</span>
+              ) : (
+                <>
+                  <span>
+                    {t('navbar.chapter')} {chapter.position + 1}
+                  </span>
+                  <span>, </span>
+                  <span>{sectionTitle}</span>
+                </>
+              )}
             </span>
           )}
           {isTabconf && (

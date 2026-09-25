@@ -21,5 +21,5 @@ export const metadata = {
   intros: ['intro-1', 'intro-2', 'intro-3'],
   lessons: ['mempool-transaction-1'],
   outros: ['outro-1'],
-  challenges: ['mempool-transaction-1'],
+  challenges: [],
 }

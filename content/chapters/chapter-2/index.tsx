@@ -32,5 +32,5 @@ export const metadata = {
     'mining-1',
   ],
   outros: ['outro-1'],
-  challenges: ['hashing-1', 'scripting-1', 'mining-1'],
+  challenges: ['hashing-1', 'mining-1'],
 }

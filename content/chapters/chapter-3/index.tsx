@@ -32,5 +32,5 @@ export const metadata = {
     'split-2',
   ],
   outros: ['outro-1'],
-  challenges: ['solo-1', 'pool-1', 'coop-1', 'split-1'],
+  challenges: ['solo-1', 'pool-1'],
 }

@@ -1,10 +1,12 @@
 import clsx from 'clsx'
 import { useAtomValue } from 'jotai'
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { syncedCourseProgressAtom } from 'state/progress/atoms'
 import ChapterAccordion from './ChapterAccordion'
 import Icon from 'shared/Icon'
 import { useLang, useTranslations } from 'hooks'
+import { isChapterVisible } from 'config/chapters'
+import StoryInterludeAccordion from '../StoryInterludeAccordion'
 
 interface INavbarDrawer {
   theme: string
@@ -50,16 +52,25 @@ const NavbarDrawer = ({ theme, isOpen, setIsOpen }: INavbarDrawer) => {
           </div>
           <div className="flex h-[calc(100dvh-70px)] flex-col overflow-y-auto">
             {courseProgress &&
-              courseProgress.chapters.map((chapter) => (
-                <ChapterAccordion
-                  key={chapter.id}
-                  id={chapter.id}
-                  currentChapter={currentChapter}
-                  setCurrentChapter={setCurrentChapter}
-                  completed={chapter.completed}
-                  hasDifficulty={chapter.hasDifficulty}
-                />
-              ))}
+              courseProgress.chapters
+                .filter((chapter) => isChapterVisible(chapter.id))
+                .map((chapter) => (
+                  <Fragment key={chapter.id}>
+                    <ChapterAccordion
+                      id={chapter.id}
+                      currentChapter={currentChapter}
+                      setCurrentChapter={setCurrentChapter}
+                      completed={chapter.completed}
+                      hasDifficulty={chapter.hasDifficulty}
+                    />
+                    {chapter.id === 3 && (
+                      <StoryInterludeAccordion
+                        currentChapter={currentChapter}
+                        setCurrentChapter={setCurrentChapter}
+                      />
+                    )}
+                  </Fragment>
+                ))}
           </div>
         </div>
       </aside>

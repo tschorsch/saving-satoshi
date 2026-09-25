@@ -7,30 +7,35 @@ import { match as matchLocale } from '@formatjs/intl-localematcher'
 import Negotiator from 'negotiator'
 import { i18n } from 'i18n/config'
 
-function getLocale(request: NextRequest): string | undefined {
+export function getLocaleFromHeaders(headers: Headers): string {
   // Negotiator expects plain object so we need to transform headers
   const negotiatorHeaders: Record<string, string> = {}
-  request.headers.forEach((value, key) => (negotiatorHeaders[key] = value))
+  headers.forEach((value, key) => (negotiatorHeaders[key] = value))
 
-  // @ts-ignore locales are readonly
-  const locales: { locale: string; label: string }[] = i18n.locales
+  const localeMappings = i18n.locales.map(({ locale }) => ({
+    routeLocale: locale,
+    intlLocale: locale.replace('_', '-'),
+  }))
+  const intlLocales = localeMappings.map(({ intlLocale }) => intlLocale)
 
   // Use negotiator and intl-localematcher to get best locale
-  let languages = new Negotiator({ headers: negotiatorHeaders }).languages(
-    locales
-  )
+  const languages = new Negotiator({ headers: negotiatorHeaders })
+    .languages()
+    .filter((language) => language !== '*')
 
   try {
-    const locale = matchLocale(
-      languages,
-      locales.map((l) => l.locale),
-      i18n.defaultLocale
+    const intlLocale = matchLocale(languages, intlLocales, i18n.defaultLocale)
+    return (
+      localeMappings.find((locale) => locale.intlLocale === intlLocale)
+        ?.routeLocale ?? i18n.defaultLocale
     )
-    return locale
-  } catch (ex) {
-    console.error(ex)
-    return 'en'
+  } catch {
+    return i18n.defaultLocale
   }
+}
+
+function getLocale(request: NextRequest): string {
+  return getLocaleFromHeaders(request.headers)
 }
 
 export function middleware(request: NextRequest) {

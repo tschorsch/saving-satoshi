@@ -24,6 +24,7 @@ import {
 } from 'state/progress/selectors'
 import { isChapterInProgress } from 'state/progress/utils'
 import DifficultySelection from './DifficultySelection'
+import { getChapterOverviewLayoutPosition } from 'config/chapters'
 
 export default function Chapter({ children, metadata, lang }) {
   const { isDevelopment } = useEnvironment()
@@ -80,6 +81,8 @@ export default function Chapter({ children, metadata, lang }) {
   )
 
   const position = metadata.position + 1
+  const isChapterCompleted =
+    courseProgress?.chapters[position - 1]?.completed ?? false
   const display = useMemo(
     () =>
       metadata.slug === 'chapter-1' ||
@@ -88,13 +91,19 @@ export default function Chapter({ children, metadata, lang }) {
       courseProgress?.chapters[position - 1]?.completed,
     [metadata.slug, isDevelopment, isEnabled, isUnlocked, isLoading]
   )
+  const canAccessChapterContent =
+    display &&
+    (isDevelopment || position === 1 || !!account || isChapterCompleted)
 
   const [activeTab, setActiveTab] = useState('info')
 
   const routes = useLocalizedRoutes()
   const t = useTranslations(lang)
   const chapter = chapters[metadata.slug]
-  const isEven = useMemo(() => position % 2 === 0, [position])
+  const isEven = useMemo(
+    () => getChapterOverviewLayoutPosition(position) % 2 === 0,
+    [position]
+  )
   const queryParams = isDevelopment ? '?dev=true' : ''
   const tabData = useMemo(
     () => [
@@ -150,10 +159,7 @@ export default function Chapter({ children, metadata, lang }) {
           )}
 
           <div>
-            {(chapter.metadata.lessons.length > 0 &&
-              display &&
-              position === 1) ||
-            (account && display) ? (
+            {chapter.metadata.lessons.length > 0 && canAccessChapterContent ? (
               <ChapterTabs
                 items={tabData}
                 activeId={activeTab}
@@ -171,10 +177,7 @@ export default function Chapter({ children, metadata, lang }) {
               >
                 <div className="font-nunito md:mt-6">
                   {(chapter.metadata.lessons.length > 0 &&
-                    display &&
-                    (position === 1 ||
-                      (account && display) ||
-                      courseProgress?.chapters[position - 1]?.completed) && (
+                    canAccessChapterContent && (
                       <div className="text-lg text-white">{children}</div>
                     )) ||
                     (isLoading && !display && (
@@ -244,7 +247,8 @@ export default function Chapter({ children, metadata, lang }) {
                         chapter.metadata.lessons.length === 0 ||
                         isLoading ||
                         !display ||
-                        (!isLoading &&
+                        (!isDevelopment &&
+                          !isLoading &&
                           position !== 1 &&
                           !account &&
                           !isAccountLoading)
@@ -253,12 +257,16 @@ export default function Chapter({ children, metadata, lang }) {
                         hidden:
                           (isLoading && position !== 1) ||
                           (!isLoading && !display && !account) ||
-                          (!!display && !account && position !== 1) ||
+                          (!isDevelopment &&
+                            !!display &&
+                            !account &&
+                            position !== 1) ||
                           (account && !isLoading && !display && position !== 1),
                       })}
                     >
                       {(isLoading && `${t('shared.loading')}`) ||
-                        (!!display &&
+                        (!isDevelopment &&
+                          !!display &&
                           !isLoading &&
                           !account &&
                           !isAccountLoading &&

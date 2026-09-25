@@ -71,12 +71,13 @@ describe('findNextIncompleteLesson', () => {
 
   it('skips chapters before the start index', () => {
     const { chapters } = createProgressFixture()
-    // Start from chapter index 1 (chapter 6 in the fixture).
+    // Start from chapter index 1. Chapter 6 is omitted from the workshop,
+    // so progression continues with the next visible chapter in the fixture.
     const result = findNextIncompleteLesson(chapters, 1)
 
     expect(result).not.toBeNull()
-    expect(result!.lesson.id).toBe('CH6INT1')
-    expect(result!.chapterId).toBe(6)
+    expect(result!.lesson.id).toBe('CH10INT1')
+    expect(result!.chapterId).toBe(10)
   })
 
   it('returns null when all lessons are complete', () => {

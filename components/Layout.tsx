@@ -4,7 +4,7 @@ import AccountModal from 'components/Modals/Account'
 import SignInModal from 'components/Modals/SignIn'
 import SignUpModal from 'components/Modals/SignUp'
 import HelpModal from 'components/Modals/Help'
-import { useAtom, useSetAtom } from 'jotai'
+import { Provider, useAtom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 import { useAuthFunctions } from 'state/AuthFunctions'
 import { useFeatureFunctions } from 'state/FeatureFunctions'
@@ -13,6 +13,14 @@ import { loadProgressAtom } from 'state/progress/actions'
 import { Modal, modalsAtom } from 'state/state'
 
 export default function Layout({ children }: { children?: React.ReactNode }) {
+  return (
+    <Provider>
+      <LayoutContent>{children}</LayoutContent>
+    </Provider>
+  )
+}
+
+function LayoutContent({ children }: { children?: React.ReactNode }) {
   const [modals] = useAtom(modalsAtom)
   const { close } = useModalFunctions()
   const { check } = useAuthFunctions()

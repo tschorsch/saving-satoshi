@@ -1896,7 +1896,7 @@ const translations = {
       nav_title: `获取交易手续费`,
       heading: `交易数据`,
       paragraph_one: `区块中确认的交易对象是 JSON 对象，其中包含 "inputs" 和 "outputs" 数组。它们描述了交易花费的旧交易输出（UTXO）以及交易创建的新交易输出（UTXO）。每个 UTXO 对象有一个 "value" 属性，以 satoshis 表示。`,
-      paragraph_two: `"inputs" 数组是交易花费（销毁）的交易输出（UTXO），"outputs" 数组是交易创建的交易输出（UTXO）。你可能还记得第 6 章，交易总是支付手续费以激励矿工将其包含在区块中。手续费正好是交易总输入值与总输出值之间的差额。`,
+      paragraph_two: `"inputs" 数组是交易花费（销毁）的交易输出（UTXO），"outputs" 数组是交易创建的交易输出（UTXO）。交易手续费用于激励矿工将交易包含在区块中。其计算方式是总输入值减去总输出值。`,
       paragraph_three: `换句话说，矿工可以保留交易中发送进来的比特币，而不是发送给交易接收者的比特币。`,
       paragraph_four: `有一笔交易的 txid 是：`,
       paragraph_five: `所在区块的哈希是：`,
