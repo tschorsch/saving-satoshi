@@ -65,9 +65,10 @@ These published keys are examples only. Generate fresh keys for real students.
   characters may also include `.`, `_`, and `-`. No spaces or umlauts. Names are
   converted to lowercase and must be unique.
 - **`password`:** a different random 64-character hexadecimal key for each account.
-  Use `0–9` and `a–f`/`A–F`, without `0x`, spaces, or hyphens. It must be a valid,
-  nonzero secp256k1 key. Ordinary text passwords are not supported. Students enter
-  this value in the frontend's **private key** field.
+  Use `0–9` and `a–f`/`A–F`, without `0x`, spaces, or hyphens. It must be a
+  cryptographically secure 256-bit (32-byte) number, represented as a
+  64-character hex string. Ordinary text passwords are not supported.
+  Students enter this value in the frontend's **private key** field.
 - Include 1–2000 accounts. Do not add extra columns, comments, or blank rows.
   Both LF and CRLF line endings work; a UTF-8 BOM is accepted.
 - In Excel, choose comma-separated UTF-8 CSV and keep keys as text.

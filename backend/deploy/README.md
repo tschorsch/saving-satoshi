@@ -83,8 +83,8 @@ Browser -> public Saving Satoshi runner
 **Before starting:** log in to your Debian/Ubuntu server over SSH. You need sudo, systemd,
 Ruby/Bundler, Node as specified in `.nvmrc`, and Yarn 1. Ruby, Bundler, Node, and
 Yarn must be installed system-wide and available to the `satoshi` service user.
-Node 26 is currently a Current release; for a long-lived production server,
-consider Node 24 LTS after checking the frontend build with that version.
+You also need the native build toolchain, `build-essential` on Debian/Ubuntu,
+because of gems with C extensions.
 The domain's DNS must point to this server, and ports **80 and 443** must be reachable.
 The application ports 3000 and 8000 stay local.
 
@@ -93,15 +93,14 @@ These steps use `/srv/saving-satoshi` for code and `/var/lib/saving-satoshi` for
 If your frontend already uses Nginx, follow steps 1–4 and 6–7 below and use the
 [existing Nginx proxy instructions](#use-an-existing-nginx-proxy)
 for step 5.
+For updates, refer to the section on [updating the deployment](#updating-the-deployment).
 
 1. **Put the project on the server and prepare its folders.**
 
-   Upload and extract the complete project so that
-   `/srv/saving-satoshi/package.json` and `/srv/saving-satoshi/backend/` exist.
-   For example, after uploading the supplied ZIP to `/tmp/`:
+   Clone the repo into `/srv/saving-satoshi` and create the `satoshi` user:
 
    ```sh
-   sudo unzip /tmp/saving-satoshi-student-backend.zip -d /srv
+   sudo git clone https://github.com/tschorsch/saving-satoshi.git /srv/saving-satoshi
    sudo useradd --system --user-group --home-dir /srv/saving-satoshi --shell /usr/sbin/nologin satoshi
    sudo chown -R satoshi:satoshi /srv/saving-satoshi
    sudo install -d -o satoshi -g satoshi -m 0700 /var/lib/saving-satoshi
@@ -174,7 +173,8 @@ for step 5.
 
 5. **Publish the website with HTTPS.**
 
-   [Install Caddy](#install-caddy-on-debian-or-ubuntu) if it is missing.
+   [Install Caddy](#install-caddy-on-debian-or-ubuntu) if it is missing or [use
+   an existing Nginx proxy](#use-an-existing-nginx-proxy).
    Open `/etc/caddy/Caddyfile` and add the site block from
    [Caddyfile.example](Caddyfile.example), replacing `satoshi.example.edu`
    with your domain. Keep any other sites already in the file. The `/v1/`
@@ -249,6 +249,16 @@ the example assumes a valid TLS certificate. Only one proxy should serve ports 8
 sudo nginx -t
 sudo systemctl reload nginx
 ```
+
+## Updating the deployment
+
+1. Pull the latest code using `sudo -u satoshi sh -c 'cd /srv/saving-satoshi && git
+pull --ff-only'`.
+2. Re-run the first command in step 2 (backend bundle install) and step 3 (frontend install and rebuild with your domain).
+  - **be careful not to overwrite your existing configuration file in
+    `/etc/saving-satoshi/backend.env`**
+3. If the update changed the service files, reinstall them per step 4.
+4. Finally, restart both services and verify as shown in step 7.
 
 ## Run administrative commands on the server
 
